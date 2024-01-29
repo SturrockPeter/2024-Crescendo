@@ -36,13 +36,29 @@ void Robot::RobotInit() {
 
   robotmap.swerveBase.gyro->Reset();
 
-  _swerveDrive = new wom::SwerveDrive(robotmap.swerveBase.config, frc::Pose2d());
-  wom::BehaviourScheduler::GetInstance()->Register(_swerveDrive);
-  _swerveDrive->SetDefaultBehaviour(
-      [this]() { return wom::make<wom::ManualDrivebase>(_swerveDrive, &robotmap.controllers.driver); });
+  // _swerveDrive = new wom::SwerveDrive(robotmap.swerveBase.config, frc::Pose2d());
+  // wom::BehaviourScheduler::GetInstance()->Register(_swerveDrive);
+  // _swerveDrive->SetDefaultBehaviour(
+  //     [this]() { return wom::make<wom::ManualDrivebase>(_swerveDrive, &robotmap.controllers.driver); });
+  
+  
+  
+  
+  
 
+  m_led.SetLength(120);
+  m_led.Start();
+  led = new LED(&m_led);
   // m_driveSim = new wom::TempSimSwerveDrive(&simulation_timer, &m_field);
   // m_driveSim = wom::TempSimSwerveDrive();
+
+   // Default to a length of 60, start empty output
+  // Length is expensive to set, so only set it once, then just update data
+// m_ledBuffer[0].SetRGB(0, 255, 0);
+
+ //   m_led.SetLength(kLength);
+// m_led.SetData(m_ledBuffer);
+//   m_led.Start();
 }
 
 void Robot::RobotPeriodic() {
@@ -52,8 +68,11 @@ void Robot::RobotPeriodic() {
   loop.Poll();
   wom::BehaviourScheduler::GetInstance()->Tick();
 
-  _swerveDrive->OnUpdate(dt);
-}
+  led->DisplayBatteryStatus(5);
+  // _swerveDrive->OnUpdate(dt);
+
+  // std::cout << "Voltage: " << frc::RobotController::GetBatteryVoltage().value() << std::endl;
+  }
 
 void Robot::AutonomousInit() {
   // m_driveSim->SetPath(m_path_chooser.GetSelected());
@@ -67,17 +86,38 @@ void Robot::AutonomousPeriodic() {
 }
 
 void Robot::TeleopInit() {
+
+  led->SectionColor(0, RGBpreset::kMagenta);
   // _swerveDrive->OnStart();
   // sched->InterruptAll();
 }
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  // for (int i = 0; i < 200; i++){
+  
+  //   m_ledBuffer[i].SetRGB(255, 0, 0);
+
+  // };
+  // m_led.SetData(m_ledBuffer);
+  
+//   for (int i = 2; i < kLength; i++) {
+//    m_ledBuffer[i].SetRGB(0, 255, 0);
+// }
+
+//m_led.SetData(m_ledBuffer);
+}
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
 
 void Robot::TestInit() {}
-void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {
+  led->DisableAll();
+}
 
 void Robot::SimulationInit() {}
 
 void Robot::SimulationPeriodic() {}
+
+
+
+

@@ -19,6 +19,9 @@
 
 #include "Wombat.h"
 
+#include "LED.h"
+
+
 struct RobotMap {
   struct Controllers {
     frc::XboxController driver = frc::XboxController(0);

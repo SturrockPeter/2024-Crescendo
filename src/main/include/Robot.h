@@ -13,11 +13,15 @@
 #include <frc/smartdashboard/Field2d.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/AddressableLED.h>
+#include <frc/RobotController.h>
 
 #include <string>
+#include <iostream>
 
 #include "RobotMap.h"
 #include "Wombat.h"
+#include "LED.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -48,4 +52,15 @@ class Robot : public frc::TimedRobot {
   frc::SendableChooser<std::string> m_path_chooser;
 
   wom::SwerveDrive* _swerveDrive;
+
+
+  static const int kLength = 120;
+  frc::AddressableLED m_led{1};
+  std::array<frc::AddressableLED::LEDData, kLength>
+      m_ledBuffer;  // Reuse the buffer
+    LED *led;
+  
+  // RobotController
+
 };
+
