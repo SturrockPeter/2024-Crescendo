@@ -3,7 +3,6 @@
 // of the MIT License at the root of this project
 
 #pragma once
-
 #include <frc/Encoder.h>
 #include <frc/TimedRobot.h>
 #include <frc/Timer.h>
@@ -19,12 +18,20 @@
 #include <string>
 #include <iostream>
 
+#include "AlphaArm.h"
+#include "AlphaArmBehaviour.h"
+#include "Intake.h"
+#include "IntakeBehaviour.h"
 #include "RobotMap.h"
+#include "Shooter.h"
+#include "ShooterBehaviour.h"
 #include "Wombat.h"
 #include "LED.h"
 
 class Robot : public frc::TimedRobot {
  public:
+  void TestInit() override;
+  void TestPeriodic() override;
   void RobotInit() override;
   void RobotPeriodic() override;
   void AutonomousInit() override;
@@ -33,16 +40,14 @@ class Robot : public frc::TimedRobot {
   void TeleopPeriodic() override;
   void DisabledInit() override;
   void DisabledPeriodic() override;
-  void TestInit() override;
-  void TestPeriodic() override;
-  void SimulationInit() override;
-  void SimulationPeriodic() override;
 
  private:
-  behaviour::BehaviourScheduler* sched;
   RobotMap robotmap;
+  wom::BehaviourScheduler* sched;
   frc::EventLoop loop;
+  Shooter* shooter;
 
+  Intake* intake;
   frc::SendableChooser<std::string> m_chooser;
 
   frc::Field2d m_field;
@@ -52,6 +57,13 @@ class Robot : public frc::TimedRobot {
   frc::SendableChooser<std::string> m_path_chooser;
 
   wom::SwerveDrive* _swerveDrive;
+
+  AlphaArm* alphaArm;
+
+  // ctre::phoenix6::hardware::TalonFX *frontLeft;
+  // ctre::phoenix6::hardware::TalonFX *frontRight;
+  // ctre::phoenix6::hardware::TalonFX *backLeft;
+  // ctre::phoenix6::hardware::TalonFX *backRight;
 
 
   static const int kLength = 120;

@@ -4,38 +4,52 @@
 
 #include "Robot.h"
 
-// include units
-#include <units/velocity.h>
+#include <frc/TimedRobot.h>
+#include <frc/Timer.h>
+#include <frc/controller/RamseteController.h>
+#include <frc/kinematics/DifferentialDriveKinematics.h>
+#include <networktables/DoubleTopic.h>
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
 #include <units/acceleration.h>
-#include <units/length.h>
 #include <units/angle.h>
+#include <units/length.h>
 #include <units/time.h>
+#include <units/velocity.h>
 #include <units/voltage.h>
 
-#include <frc/kinematics/DifferentialDriveKinematics.h>
-#include <frc/controller/RamseteController.h>
-#include <frc/Timer.h>
+#include "behaviour/HasBehaviour.h"
 
 static units::second_t lastPeriodic;
 
 void Robot::RobotInit() {
+  shooter = new Shooter(robotmap.shooterSystem.config);
+  wom::BehaviourScheduler::GetInstance()->Register(shooter);
+  shooter->SetDefaultBehaviour(
+      [this]() { return wom::make<ShooterManualControl>(shooter, &robotmap.controllers.codriver); });
+
+  sched = wom::BehaviourScheduler::GetInstance();
   m_chooser.SetDefaultOption("Default Auto", "Default Auto");
 
-  frc::SmartDashboard::PutData("Auto Selector", &m_chooser);
+  // frc::SmartDashboard::PutData("Auto Selector", &m_chooser);
 
-  m_path_chooser.SetDefaultOption("Path1", "paths/output/Path1.wpilib.json");
+  // m_path_chooser.SetDefaultOption("Path1", "paths/output/Path1.wpilib.json");
 
-  m_path_chooser.AddOption("Path1", "paths/output/Path1.wpilib.json");
-  m_path_chooser.AddOption("Path2", "paths/output/Path2.wpilib.json");
+  // m_path_chooser.AddOption("Path1", "paths/output/Path1.wpilib.json");
+  // m_path_chooser.AddOption("Path2", "paths/output/Path2.wpilib.json");
 
-  frc::SmartDashboard::PutData("Path Selector", &m_path_chooser);
+  // frc::SmartDashboard::PutData("Path Selector", &m_path_chooser);
 
-  frc::SmartDashboard::PutData("Field", &m_field);
+  // frc::SmartDashboard::PutData("Field", &m_field);
 
-  simulation_timer = frc::Timer();
+  // simulation_timer = frc::Timer();
 
-  robotmap.swerveBase.gyro->Reset();
+  // robotmap.swerveBase.gyro->Reset();
 
+  // _swerveDrive = new wom::SwerveDrive(robotmap.swerveBase.config, frc::Pose2d());
+  // wom::BehaviourScheduler::GetInstance()->Register(_swerveDrive);
+  // _swerveDrive->SetDefaultBehaviour(
+  //     [this]() { return wom::make<wom::ManualDrivebase>(_swerveDrive, &robotmap.controllers.driver); });
   // _swerveDrive = new wom::SwerveDrive(robotmap.swerveBase.config, frc::Pose2d());
   // wom::BehaviourScheduler::GetInstance()->Register(_swerveDrive);
   // _swerveDrive->SetDefaultBehaviour(
@@ -59,6 +73,31 @@ void Robot::RobotInit() {
  //   m_led.SetLength(kLength);
 // m_led.SetData(m_ledBuffer);
 //   m_led.Start();
+
+  alphaArm = new AlphaArm(robotmap.alphaArmSystem.config);
+  wom::BehaviourScheduler::GetInstance()->Register(alphaArm);
+  alphaArm->SetDefaultBehaviour(
+      [this]() { return wom::make<AlphaArmManualControl>(alphaArm, &robotmap.controllers.codriver); });
+
+  robotmap.swerveBase.moduleConfigs[0].turnMotor.encoder->SetEncoderOffset(0_rad);
+  robotmap.swerveBase.moduleConfigs[1].turnMotor.encoder->SetEncoderOffset(0_rad);
+  robotmap.swerveBase.moduleConfigs[2].turnMotor.encoder->SetEncoderOffset(0_rad);
+  robotmap.swerveBase.moduleConfigs[3].turnMotor.encoder->SetEncoderOffset(0_rad);
+
+  // frontLeft = new ctre::phoenix6::hardware::TalonFX(7, "Drivebase");  // front left
+  // frontRight = new ctre::phoenix6::hardware::TalonFX(2, "Drivebase");   // front right
+  // backLeft = new ctre::phoenix6::hardware::TalonFX(6, "Drivebase");   // back left
+  // backRight = new ctre::phoenix6::hardware::TalonFX(4, "Drivebase");  // back right
+  // frontLeft = new ctre::phoenix6::hardware::TalonFX(9, "Drivebase");   // front left
+  // frontRight = new ctre::phoenix6::hardware::TalonFX(1, "Drivebase");   // front right
+  // backLeft = new ctre::phoenix6::hardware::TalonFX(5, "Drivebase");   // back left
+  // backRight = new ctre::phoenix6::hardware::TalonFX(3, "Drivebase");
+  lastPeriodic = wom::now();
+
+  intake = new Intake(robotmap.intakeSystem.config);
+  wom::BehaviourScheduler::GetInstance()->Register(intake);
+  intake->SetDefaultBehaviour(
+      [this]() { return wom::make<IntakeManualControl>(intake, robotmap.controllers.codriver); });
 }
 
 void Robot::RobotPeriodic() {
@@ -67,30 +106,48 @@ void Robot::RobotPeriodic() {
 
   loop.Poll();
   wom::BehaviourScheduler::GetInstance()->Tick();
+  shooter->OnUpdate(dt);
+  sched->Tick();
+
+  robotmap.swerveTable.swerveDriveTable->GetEntry("frontLeftEncoder")
+      .SetDouble(robotmap.swerveBase.moduleConfigs[0].turnMotor.encoder->GetEncoderPosition().value());
+  robotmap.swerveTable.swerveDriveTable->GetEntry("frontRightEncoder")
+      .SetDouble(robotmap.swerveBase.moduleConfigs[1].turnMotor.encoder->GetEncoderPosition().value());
+  robotmap.swerveTable.swerveDriveTable->GetEntry("backLeftEncoder")
+      .SetDouble(robotmap.swerveBase.moduleConfigs[2].turnMotor.encoder->GetEncoderPosition().value());
+  robotmap.swerveTable.swerveDriveTable->GetEntry("backRightEncoder")
+      .SetDouble(robotmap.swerveBase.moduleConfigs[3].turnMotor.encoder->GetEncoderPosition().value());
 
   led->DisplayBatteryStatus(5);
   // _swerveDrive->OnUpdate(dt);
 
   // std::cout << "Voltage: " << frc::RobotController::GetBatteryVoltage().value() << std::endl;
-  }
+    alphaArm->OnUpdate(dt);
+  intake->OnUpdate(dt);
+}
 
 void Robot::AutonomousInit() {
-  // m_driveSim->SetPath(m_path_chooser.GetSelected());
-
   loop.Clear();
   sched->InterruptAll();
-  // _swerveDrive->OnStart();
 }
-void Robot::AutonomousPeriodic() {
-  // m_driveSim->OnUpdate();
-}
+void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
 
   led->SectionColor(0, RGBpreset::kMagenta);
-  // _swerveDrive->OnStart();
-  // sched->InterruptAll();
+  loop.Clear();
+  wom::BehaviourScheduler* sched = wom::BehaviourScheduler::GetInstance();
+  sched->InterruptAll();
+
+  // frontLeft->SetVoltage(4_V);
+  // frontRight->SetVoltage(4_V);
+  // backLeft->SetVoltage(4_V);
+  // backRight->SetVoltage(4_V);
+  loop.Clear();
+  wom::BehaviourScheduler* scheduler = wom::BehaviourScheduler::GetInstance();
+  scheduler->InterruptAll();
 }
+
 void Robot::TeleopPeriodic() {
   // for (int i = 0; i < 200; i++){
   
@@ -113,10 +170,6 @@ void Robot::TestInit() {}
 void Robot::TestPeriodic() {
   led->DisableAll();
 }
-
-void Robot::SimulationInit() {}
-
-void Robot::SimulationPeriodic() {}
 
 
 
