@@ -10,6 +10,11 @@ AlphaArmConfig AlphaArm::GetConfig() {
   return _config;
 }
 
+
+AlphaArmState AlphaArm::getState() {
+  return _state;
+}
+
 void AlphaArm::OnUpdate(units::second_t dt) {
   switch (_state) {
     case AlphaArmState::kIdle:

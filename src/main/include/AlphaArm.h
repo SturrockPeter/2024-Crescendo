@@ -30,7 +30,9 @@ class AlphaArm : public ::behaviour::HasBehaviour {
   void SetArmRaw(units::volt_t voltage);
   void setWristRaw(units::volt_t voltage);
   void SetState(AlphaArmState state);
+
   AlphaArmConfig GetConfig();
+  AlphaArmState getState();
   // void SetRaw(units::volt_t voltage);
 
  private:

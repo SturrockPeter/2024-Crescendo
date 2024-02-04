@@ -30,7 +30,9 @@ class Shooter : public behaviour::HasBehaviour {
   void SetRaw(units::volt_t voltage);
   void SetPidGoal(units::radians_per_second_t);
   std::shared_ptr<nt::NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("Shooter");
-  ShooterConfig GetConfig() { return _config; }
+  ShooterConfig GetConfig();
+
+  ShooterState getState();
 
  private:
   ShooterConfig _config;

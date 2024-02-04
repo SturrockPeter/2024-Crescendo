@@ -5,12 +5,23 @@
 #include <frc/RobotController.h>
 #include <frc/AddressableLED.h>
 #include <vector>
+#include <iostream>
+#include <algorithm>
+#include "Intake.h"
+#include "Shooter.h"
+#include "AlphaArm.h"
+#include <frc/Timer.h>
+
 
 struct LEDstrip {
   int kLength;
   frc::AddressableLED m_led;
     // Reuse the buffer
 
+};
+
+struct RGBvalues {
+  int r, g, b;
 };
 
 enum class RGBpreset {
@@ -28,8 +39,23 @@ class LED {
   LED(frc::AddressableLED *ledStrip);
   // type functionName (parameterType parameterName, parameterType parameterName = parameterDefaultValue);
   void SectionColor(int LEDsection, RGBpreset LEDcolor);
-  
+  void SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty);
+  void SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty, bool loop);
+  void SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty, bool loop, bool inverse);
+
+  RGBvalues GetRGBValues (RGBpreset LEDcolor);
+
+  void StoreIntakeState(IntakeState intakeState);
+  void StoreShooterState(ShooterState shooterState);
+
   void DisplayBatteryStatus(int LEDsection);
+
+  void DisplayIntakeStatus(int LEDsection);
+
+  void DisplayShooterStatus(int LEDsection);
+
+  void DisplayArmStatus(int LEDsection);
+
 
   void DisableAll();
 
@@ -37,9 +63,16 @@ class LED {
   RGBpreset _RGBpreset = RGBpreset::kIdle;
   static constexpr int kLength = 120;
   std::array<frc::AddressableLED::LEDData, kLength> ledBuffer;
+  
   frc::AddressableLED *_ledStrip;
 
   bool _testDisable = false;
+
+  IntakeState _intakeState = IntakeState::kIdle;
+
+  ShooterState _shooterState = ShooterState::kRaw;
+
+  AlphaArmState _alphaArmState = AlphaArmState::kIdle;
 
   std::vector<double> recentVoltages;
 };

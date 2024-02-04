@@ -5,10 +5,19 @@
 #include "Shooter.h"
 
 Shooter::Shooter(ShooterConfig config)
-    : _config(config)
+    : _config(config){}
+
+ShooterConfig Shooter::GetConfig() {
+  return _config;
+}
+
+ShooterState Shooter::getState() {
+  return _state;
+}
+
 // ,
 // _pid{frc::PIDController (1, 0, 0, 0.005_s)}
-{}  // config.path + "/pid", config.pidConfig
+  // config.path + "/pid", config.pidConfig
 void Shooter::OnUpdate(units::second_t dt) {
   // _pid.SetTolerance(0.1, 1);
   switch (_state) {

@@ -10,6 +10,10 @@ IntakeConfig Intake::GetConfig() {
   return _config;
 }
 
+IntakeState Intake::getState() {
+  return _state;
+}
+
 void Intake::OnUpdate(units::second_t dt) {
   switch (_state) {
     case IntakeState::kIdle: {
@@ -24,6 +28,7 @@ void Intake::OnUpdate(units::second_t dt) {
       // _config.IntakeMotor.motorController->SetVoltage(_rawVoltage);
       _stringStateName = "Raw";
       _setVoltage = _rawVoltage;
+      
     } break;
     case IntakeState::kEject: {
       // _config.IntakeMotor.motorController->SetVoltage(-5_V);
@@ -42,6 +47,7 @@ void Intake::OnUpdate(units::second_t dt) {
       // _config.IntakeMotor.motorController->SetVoltage(5_V);
       _stringStateName = "Intake";
       _setVoltage = 5_V;
+      
     } break;
     case IntakeState::kPass: {
       // _config.IntakeMotor.motorController->SetVoltage(5_V);

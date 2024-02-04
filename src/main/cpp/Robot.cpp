@@ -79,10 +79,10 @@ void Robot::RobotInit() {
   alphaArm->SetDefaultBehaviour(
       [this]() { return wom::make<AlphaArmManualControl>(alphaArm, &robotmap.controllers.codriver); });
 
-  robotmap.swerveBase.moduleConfigs[0].turnMotor.encoder->SetEncoderOffset(0_rad);
-  robotmap.swerveBase.moduleConfigs[1].turnMotor.encoder->SetEncoderOffset(0_rad);
-  robotmap.swerveBase.moduleConfigs[2].turnMotor.encoder->SetEncoderOffset(0_rad);
-  robotmap.swerveBase.moduleConfigs[3].turnMotor.encoder->SetEncoderOffset(0_rad);
+  // robotmap.swerveBase.moduleConfigs[0].turnMotor.encoder->SetEncoderOffset(0_rad);
+  // robotmap.swerveBase.moduleConfigs[1].turnMotor.encoder->SetEncoderOffset(0_rad);
+  // robotmap.swerveBase.moduleConfigs[2].turnMotor.encoder->SetEncoderOffset(0_rad);
+  // robotmap.swerveBase.moduleConfigs[3].turnMotor.encoder->SetEncoderOffset(0_rad);
 
   // frontLeft = new ctre::phoenix6::hardware::TalonFX(7, "Drivebase");  // front left
   // frontRight = new ctre::phoenix6::hardware::TalonFX(2, "Drivebase");   // front right
@@ -106,24 +106,28 @@ void Robot::RobotPeriodic() {
 
   loop.Poll();
   wom::BehaviourScheduler::GetInstance()->Tick();
-  shooter->OnUpdate(dt);
+  // shooter->OnUpdate(dt);
   sched->Tick();
 
-  robotmap.swerveTable.swerveDriveTable->GetEntry("frontLeftEncoder")
-      .SetDouble(robotmap.swerveBase.moduleConfigs[0].turnMotor.encoder->GetEncoderPosition().value());
-  robotmap.swerveTable.swerveDriveTable->GetEntry("frontRightEncoder")
-      .SetDouble(robotmap.swerveBase.moduleConfigs[1].turnMotor.encoder->GetEncoderPosition().value());
-  robotmap.swerveTable.swerveDriveTable->GetEntry("backLeftEncoder")
-      .SetDouble(robotmap.swerveBase.moduleConfigs[2].turnMotor.encoder->GetEncoderPosition().value());
-  robotmap.swerveTable.swerveDriveTable->GetEntry("backRightEncoder")
-      .SetDouble(robotmap.swerveBase.moduleConfigs[3].turnMotor.encoder->GetEncoderPosition().value());
+  // robotmap.swerveTable.swerveDriveTable->GetEntry("frontLeftEncoder")
+  //     .SetDouble(robotmap.swerveBase.moduleConfigs[0].turnMotor.encoder->GetEncoderPosition().value());
+  // robotmap.swerveTable.swerveDriveTable->GetEntry("frontRightEncoder")
+  //     .SetDouble(robotmap.swerveBase.moduleConfigs[1].turnMotor.encoder->GetEncoderPosition().value());
+  // robotmap.swerveTable.swerveDriveTable->GetEntry("backLeftEncoder")
+  //     .SetDouble(robotmap.swerveBase.moduleConfigs[2].turnMotor.encoder->GetEncoderPosition().value());
+  // robotmap.swerveTable.swerveDriveTable->GetEntry("backRightEncoder")
+  //     .SetDouble(robotmap.swerveBase.moduleConfigs[3].turnMotor.encoder->GetEncoderPosition().value());
 
-  led->DisplayBatteryStatus(5);
+  led->DisplayBatteryStatus(0);
+
+  led->DisplayIntakeStatus(8);
+  led->DisplayShooterStatus(9);
+  led->DisplayArmStatus(6);
   // _swerveDrive->OnUpdate(dt);
 
   // std::cout << "Voltage: " << frc::RobotController::GetBatteryVoltage().value() << std::endl;
-    alphaArm->OnUpdate(dt);
-  intake->OnUpdate(dt);
+    // alphaArm->OnUpdate(dt);
+  // intake->OnUpdate(dt);
 }
 
 void Robot::AutonomousInit() {
@@ -134,7 +138,7 @@ void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
 
-  led->SectionColor(0, RGBpreset::kMagenta);
+  // led->SectionColor(-1, RGBpreset::kIdle);
   loop.Clear();
   wom::BehaviourScheduler* sched = wom::BehaviourScheduler::GetInstance();
   sched->InterruptAll();

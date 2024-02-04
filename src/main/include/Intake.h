@@ -27,8 +27,14 @@ class Intake : public behaviour::HasBehaviour {
   void OnUpdate(units::second_t dt);
 
   void setState(IntakeState state);
+
+  IntakeState getState();
+
   void setRaw(units::volt_t voltage);
+  
   IntakeConfig GetConfig();
+
+
 
  private:
   IntakeConfig _config;
