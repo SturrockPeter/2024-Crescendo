@@ -79,7 +79,7 @@ void LED::SectionColor(int LEDsection, RGBpreset LEDcolor){
     		bool RemoveEnd = false;
     		int j = 0;
    		int k = 1;
-    		int sectionid = (LEDsection * 1);
+    		int sectionid = (LEDsection * 10);
 
     		RGBvalues values = GetRGBValues (LEDcolor);
 
