@@ -66,7 +66,7 @@ class Robot : public frc::TimedRobot {
   // ctre::phoenix6::hardware::TalonFX *backRight;
 
 
-  static const int kLength = 120;
+  static const int kLength = 220;
   frc::AddressableLED m_led{1};
   std::array<frc::AddressableLED::LEDData, kLength>
       m_ledBuffer;  // Reuse the buffer

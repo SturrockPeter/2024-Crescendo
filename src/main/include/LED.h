@@ -43,10 +43,13 @@ class LED {
   void SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty, bool loop);
   void SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty, bool loop, bool inverse);
 
+  void Pain();
+
   RGBvalues GetRGBValues (RGBpreset LEDcolor);
 
   void StoreIntakeState(IntakeState intakeState);
   void StoreShooterState(ShooterState shooterState);
+  void StoreArmState(AlphaArmState alphaArmState);
 
   void DisplayBatteryStatus(int LEDsection);
 
@@ -57,16 +60,21 @@ class LED {
   void DisplayArmStatus(int LEDsection);
 
 
+
+
   void DisableAll();
 
   private:
   RGBpreset _RGBpreset = RGBpreset::kIdle;
-  static constexpr int kLength = 120;
+  static constexpr int kLength = 220;
   std::array<frc::AddressableLED::LEDData, kLength> ledBuffer;
   
   frc::AddressableLED *_ledStrip;
 
   bool _testDisable = false;
+
+  int _bufferPriority = 0;
+  int _priorityLevel = 0;
 
   IntakeState _intakeState = IntakeState::kIdle;
 

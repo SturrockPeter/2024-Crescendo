@@ -60,7 +60,7 @@ void Robot::RobotInit() {
   
   
 
-  m_led.SetLength(120);
+  m_led.SetLength(220);
   m_led.Start();
   led = new LED(&m_led);
   // m_driveSim = new wom::TempSimSwerveDrive(&simulation_timer, &m_field);
@@ -118,11 +118,15 @@ void Robot::RobotPeriodic() {
   // robotmap.swerveTable.swerveDriveTable->GetEntry("backRightEncoder")
   //     .SetDouble(robotmap.swerveBase.moduleConfigs[3].turnMotor.encoder->GetEncoderPosition().value());
 
+
   led->DisplayBatteryStatus(0);
 
   led->DisplayIntakeStatus(8);
-  led->DisplayShooterStatus(9);
+  // led->Pain();
+  led->DisplayShooterStatus(10);
+  // led->Pain();
   led->DisplayArmStatus(6);
+  led->Pain();
   // _swerveDrive->OnUpdate(dt);
 
   // std::cout << "Voltage: " << frc::RobotController::GetBatteryVoltage().value() << std::endl;

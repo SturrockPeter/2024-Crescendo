@@ -66,26 +66,34 @@ RGBvalues LED::GetRGBValues (RGBpreset LEDcolor) {
   return values;
 }
 
+void LED::Pain(){ 
+
+    _ledStrip->SetData(ledBuffer);
+
+}
+
 void LED::SectionColor(int LEDsection, RGBpreset LEDcolor){
   	if (_testDisable) {return;}
+
     		int r,g,b = 0;
     		bool RemoveEnd = false;
     		int j = 0;
    		int k = 1;
-    		int sectionid = (LEDsection * 10);
+    		int sectionid = (LEDsection * 1);
 
     		RGBvalues values = GetRGBValues (LEDcolor);
 
 	      for (int i = sectionid; i < 10 + sectionid; i++){
           ledBuffer[i].SetRGB(values.r, values.g, values.b);
         };
-        _ledStrip->SetData(ledBuffer);
+        // _ledStrip->SetData(ledBuffer);
 
+    
 }
-		
-
+ 
 void LED::SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty){
   if (_testDisable) {return;}
+
     int r,g,b = 0;
 
     int sectionid = (LEDsection * 10);
@@ -96,10 +104,11 @@ void LED::SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty){
     for (int i = sectionid; i < sections + sectionid; i++){
       ledBuffer[i].SetRGB(values.r, values.g, values.b);
     };
-    _ledStrip->SetData(ledBuffer);
+    // _ledStrip->SetData(ledBuffer);
 
+   
 }
-
+ 
 void LED::SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty, bool loop){
   if (_testDisable) {return;}
     int r,g,b = 0;
@@ -111,6 +120,9 @@ void LED::SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty, bool 
     
     int previous = 0;
     		for (int i = sectionid; i < sections + sectionid; i++){
+
+          int sectionid = (LEDsection * 10);
+          int sections = (sectionQty * 10);
      			if (i > sectionid + 2) {
 				ledBuffer[previous].SetRGB(0, 0, 0);
 			} 
@@ -125,13 +137,15 @@ void LED::SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty, bool 
       std::this_thread::sleep_for (std::chrono::milliseconds(35));
 		}
 		ledBuffer[previous].SetRGB(0, 0, 0);
-		_ledStrip->SetData(ledBuffer);
+    
+    
+		// _ledStrip->SetData(ledBuffer);
     }
 
 void LED::SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty, bool loop, bool inverse){
   if (_testDisable) {return;}
     int r,g,b = 0;
-
+ 
     int sectionid = (LEDsection * 10);
     int sections = (sectionQty * 10);
     
@@ -139,6 +153,9 @@ void LED::SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty, bool 
     
     int previous = 0;
     		for (int i = sectionid + sections; i > sectionid - 1; i--){
+          int sectionid = (LEDsection * 10);
+          int sections = (sectionQty * 10);
+
      			if (i < (sectionid + sections) - 2) {
 				ledBuffer[previous].SetRGB(0, 0, 0);
 			} 
@@ -147,13 +164,13 @@ void LED::SectionColor(int LEDsection, RGBpreset LEDcolor, int sectionQty, bool 
       }
 
 			ledBuffer[i].SetRGB(values.r, values.g, values.b);
-    			_ledStrip->SetData(ledBuffer);
+    			// _ledStrip->SetData(ledBuffer);
 			previous = i + 2;
 
       std::this_thread::sleep_for (std::chrono::milliseconds(35));
-		}
+		  }
 		ledBuffer[previous].SetRGB(0, 0, 0);
-		_ledStrip->SetData(ledBuffer);
+		// _ledStrip->SetData(ledBuffer);
 }
 
 void LED::DisplayBatteryStatus(int LEDsection){
@@ -176,9 +193,9 @@ void LED::DisplayBatteryStatus(int LEDsection){
   double averageVoltage = voltagesSum / recentVoltages.size();
 
   if (averageVoltage > 10) {
-    SectionColor(LEDsection, RGBpreset::kGreen);
+    SectionColor(LEDsection, RGBpreset::kMagenta, 6);
   } else {
-    SectionColor(LEDsection, RGBpreset::kBlue);
+    SectionColor(LEDsection, RGBpreset::kBlue, 6);
   }
 };
 
@@ -189,16 +206,16 @@ void LED::StoreIntakeState(IntakeState intakeState) {
 void LED::DisplayIntakeStatus(int LEDsection) {
   switch (_intakeState) {
     case IntakeState::kIdle: {
-      SectionColor(LEDsection, RGBpreset::kRed, 2);
+      SectionColor(LEDsection, RGBpreset::kMagenta);
     } break;
     case IntakeState::kEject: {
-      SectionColor(LEDsection, RGBpreset::kRed, 2, true, true);
+      SectionColor(LEDsection, RGBpreset::kRed, 2);
     } break;
     case IntakeState::kHold: {
       SectionColor(LEDsection, RGBpreset::kMagenta, 2);
     } break;
     case IntakeState::kIntake: {
-      SectionColor(LEDsection, RGBpreset::kMagenta, 2, true);
+      SectionColor(LEDsection, RGBpreset::kMagenta, 2);
     } break;
 
     default:
@@ -227,20 +244,20 @@ void LED::StoreShooterState(ShooterState shooterState) {
 void LED::DisplayShooterStatus(int LEDsection) {
   switch (_shooterState) {
     case ShooterState::kIdle: {
-      SectionColor(LEDsection, RGBpreset::kRed, 2);
+      SectionColor(LEDsection, RGBpreset::kMagenta);
     } break;
     case ShooterState::kSpinUp: {
-
+      SectionColor(LEDsection, RGBpreset::kMagenta, 2);
     } break;
     case ShooterState::kShooting: {
-
+      SectionColor(LEDsection, RGBpreset::kRed, 2);
     } break;
 
     case ShooterState::kReverse: {
-
+      SectionColor(LEDsection, RGBpreset::kGreen);
     } break;
     case ShooterState::kRaw: {
-
+      SectionColor(LEDsection, RGBpreset::kMagenta);
     } break;
     default:
       SectionColor(LEDsection, RGBpreset::kIdle);
@@ -249,19 +266,24 @@ void LED::DisplayShooterStatus(int LEDsection) {
  
 };
 
+void LED::StoreArmState(AlphaArmState alphaArmState) {
+  _alphaArmState = alphaArmState;
+};
+
+
 void LED::DisplayArmStatus(int LEDsection) {
   switch (_alphaArmState) {
     case AlphaArmState::kIdle: {
-      SectionColor(LEDsection, RGBpreset::kRed, 2);
+      SectionColor(LEDsection, RGBpreset::kMagenta, 2);
     } break;
     case AlphaArmState::kRaw:{
 
     }break;
     case AlphaArmState::kForwardWrist:{
-
+    SectionColor(LEDsection, RGBpreset::kBlue, 2);
     }break;
     case AlphaArmState::kReverseWrist:{
-
+      SectionColor(LEDsection, RGBpreset::kBlue, 2);
     }break;
     default:
       SectionColor(LEDsection, RGBpreset::kIdle);
@@ -272,7 +294,7 @@ void LED::DisplayArmStatus(int LEDsection) {
 
 
 void LED::DisableAll(){
-  for (int i = 0; i < 120; i++){
+  for (int i = 0; i < 220; i++){
       ledBuffer[i].SetRGB(0, 0, 0);
     };
     _ledStrip->SetData(ledBuffer);
