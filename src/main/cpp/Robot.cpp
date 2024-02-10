@@ -46,19 +46,10 @@ void Robot::RobotInit() {
 
   // robotmap.swerveBase.gyro->Reset();
 
-  // _swerveDrive = new wom::SwerveDrive(robotmap.swerveBase.config, frc::Pose2d());
-  // wom::BehaviourScheduler::GetInstance()->Register(_swerveDrive);
-  // _swerveDrive->SetDefaultBehaviour(
-  //     [this]() { return wom::make<wom::ManualDrivebase>(_swerveDrive, &robotmap.controllers.driver); });
-  // _swerveDrive = new wom::SwerveDrive(robotmap.swerveBase.config, frc::Pose2d());
-  // wom::BehaviourScheduler::GetInstance()->Register(_swerveDrive);
-  // _swerveDrive->SetDefaultBehaviour(
-  //     [this]() { return wom::make<wom::ManualDrivebase>(_swerveDrive, &robotmap.controllers.driver); });
-  
-  
-  
-  
-  
+  _swerveDrive = new wom::SwerveDrive(robotmap.swerveBase.config, frc::Pose2d());
+  wom::BehaviourScheduler::GetInstance()->Register(_swerveDrive);
+  _swerveDrive->SetDefaultBehaviour(
+      [this]() { return wom::make<wom::ManualDrivebase>(_swerveDrive, &robotmap.controllers.driver); });
 
   m_led.SetLength(220);
   m_led.Start();
@@ -109,15 +100,15 @@ void Robot::RobotPeriodic() {
   // shooter->OnUpdate(dt);
   sched->Tick();
 
-  // robotmap.swerveTable.swerveDriveTable->GetEntry("frontLeftEncoder")
-  //     .SetDouble(robotmap.swerveBase.moduleConfigs[0].turnMotor.encoder->GetEncoderPosition().value());
-  // robotmap.swerveTable.swerveDriveTable->GetEntry("frontRightEncoder")
-  //     .SetDouble(robotmap.swerveBase.moduleConfigs[1].turnMotor.encoder->GetEncoderPosition().value());
-  // robotmap.swerveTable.swerveDriveTable->GetEntry("backLeftEncoder")
-  //     .SetDouble(robotmap.swerveBase.moduleConfigs[2].turnMotor.encoder->GetEncoderPosition().value());
-  // robotmap.swerveTable.swerveDriveTable->GetEntry("backRightEncoder")
-  //     .SetDouble(robotmap.swerveBase.moduleConfigs[3].turnMotor.encoder->GetEncoderPosition().value());
-
+robotmap.swerveTable.swerveDriveTable->GetEntry("frontLeftEncoder")
+      .SetDouble(robotmap.swerveBase.moduleConfigs[0].turnMotor.encoder->GetEncoderPosition().value());
+  robotmap.swerveTable.swerveDriveTable->GetEntry("frontRightEncoder")
+      .SetDouble(robotmap.swerveBase.moduleConfigs[1].turnMotor.encoder->GetEncoderPosition().value());
+  robotmap.swerveTable.swerveDriveTable->GetEntry("backLeftEncoder")
+      .SetDouble(robotmap.swerveBase.moduleConfigs[2].turnMotor.encoder->GetEncoderPosition().value());
+  robotmap.swerveTable.swerveDriveTable->GetEntry("backRightEncoder")
+      .SetDouble(robotmap.swerveBase.moduleConfigs[3].turnMotor.encoder->GetEncoderPosition().value());
+ 
 
   led->DisplayBatteryStatus(0);
 
@@ -127,11 +118,15 @@ void Robot::RobotPeriodic() {
   // led->Pain();
   led->DisplayArmStatus(6);
   led->Pain();
-  // _swerveDrive->OnUpdate(dt);
+  _swerveDrive->OnUpdate(dt);
 
   // std::cout << "Voltage: " << frc::RobotController::GetBatteryVoltage().value() << std::endl;
     // alphaArm->OnUpdate(dt);
   // intake->OnUpdate(dt);
+  _swerveDrive->OnUpdate(dt);
+  alphaArm->OnUpdate(dt);
+  shooter->OnStart();
+  intake->OnUpdate(dt);
 }
 
 void Robot::AutonomousInit() {
