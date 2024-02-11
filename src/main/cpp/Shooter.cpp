@@ -4,8 +4,7 @@
 
 #include "Shooter.h"
 
-Shooter::Shooter(ShooterConfig config) : _config(config), _pid(config.path + "/pid", config.pidConfig) {}
-    : _config(config){}
+
 
 void Shooter::OnStart() {
   _pid.Reset();
@@ -24,9 +23,7 @@ ShooterState Shooter::getState() {
   // config.path + "/pid", config.pidConfig
 Shooter::Shooter(ShooterConfig config) : _config(config), _pid(config.path + "/pid", config.pidConfig) {}
 
-void Shooter::OnStart() {
-  _pid.Reset();
-}
+
 
 void Shooter::OnUpdate(units::second_t dt) {
   // _pid.SetTolerance(0.5, 4);

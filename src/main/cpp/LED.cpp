@@ -1,7 +1,6 @@
 #include "LED.h"
 
 
-
 LED::LED(frc::AddressableLED *ledStrip) : _ledStrip(ledStrip) {}
 
 RGBvalues LED::GetRGBValues (RGBpreset LEDcolor) {

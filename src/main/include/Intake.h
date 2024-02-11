@@ -28,7 +28,7 @@ class Intake : public behaviour::HasBehaviour {
 
   void setState(IntakeState state);
 
-  IntakeState getState();
+  
 
   void setRaw(units::volt_t voltage);
   IntakeState getState();

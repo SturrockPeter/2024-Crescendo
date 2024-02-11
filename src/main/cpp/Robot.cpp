@@ -51,7 +51,7 @@ void Robot::RobotInit() {
   _swerveDrive->SetDefaultBehaviour(
       [this]() { return wom::make<wom::ManualDrivebase>(_swerveDrive, &robotmap.controllers.driver); });
 
-  m_led.SetLength(220);
+  m_led.SetLength(110);
   m_led.Start();
   led = new LED(&m_led);
   // m_driveSim = new wom::TempSimSwerveDrive(&simulation_timer, &m_field);

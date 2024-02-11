@@ -86,6 +86,4 @@ void Intake::setState(IntakeState state) {
 void Intake::setRaw(units::volt_t voltage) {
   _rawVoltage = voltage;
 }
-IntakeState Intake::getState() {
-  return _state;
-}
+
